@@ -2,10 +2,6 @@
 #include <filesystem>
 #include <vector>
 #include <regex>
-#in#include <iostream>
-#include <filesystem>
-#include <vector>
-#include <regex>
 #include <string>
 
 namespace fs = std::filesystem;
@@ -69,4 +65,112 @@ void listFilesMenu() {
     std::cout << "Enter your choice: ";
     std::cin >> choice;
 
-        
+    switch (choice) {
+        case 1:
+            listAllFiles();
+            break;
+        case 2:
+            listFilesByExtension();
+            break;
+        case 3:
+            listFilesByPattern();
+            break;
+        default:
+            std::cerr << "Invalid choice. Returning to main menu.\n";
+    }
+}
+
+void listAllFiles() {
+    std::cout << "\nFiles in the current directory:\n";
+    for (const auto& entry : fs::directory_iterator(fs::current_path())) {
+        std::cout << entry.path().filename().string() << std::endl;
+    }
+}
+
+void listFilesByExtension() {
+    std::string extension;
+    std::cout << "Enter the file extension (e.g., .txt): ";
+    std::cin >> extension;
+
+    std::cout << "\nFiles with extension '" << extension << "':\n";
+    for (const auto& entry : fs::directory_iterator(fs::current_path())) {
+        if (entry.path().extension() == extension) {
+            std::cout << entry.path().filename().string() << std::endl;
+        }
+    }
+}
+
+void listFilesByPattern() {
+    std::string pattern;
+    std::cout << "Enter the pattern (e.g., moha*.*): ";
+    std::cin >> pattern;
+
+    // Convert pattern to regex pattern (simple approach)
+    std::string regex_pattern = std::regex_replace(pattern, std::regex("\\*"), ".*");
+
+    std::cout << "\nFiles matching pattern '" << pattern << "':\n";
+    for (const auto& entry : fs::directory_iterator(fs::current_path())) {
+        if (std::regex_match(entry.path().filename().string(), std::regex(regex_pattern))) {
+            std::cout << entry.path().filename().string() << std::endl;
+        }
+    }
+}
+
+void createDirectory() {
+    std::string dirName;
+    std::cout << "Enter the name of the directory to create: ";
+    std::cin >> dirName;
+
+    fs::path newDir = fs::current_path() / dirName; // Create in the current directory
+    if (fs::create_directory(newDir)) {
+        std::cout << "Directory '" << dirName << "' created successfully.\n";
+    } else {
+        std::cerr << "Error: Directory '" << dirName << "' could not be created.\n";
+    }
+}
+
+void changeDirectory() {
+    int choice;
+    displayDirectoryMenu();
+    std::cin >> choice;
+    handleDirectorySelection(choice);
+}
+
+void displayDirectoryMenu() {
+    std::cout << "\nChange Directory Menu\n";
+    std::cout << "1. Move one step back (to the parent directory)\n";
+    std::cout << "2. Move to the root directory\n";
+    std::cout << "3. Move to a specific directory\n";
+    std::cout << "Enter your choice: ";
+}
+
+void handleDirectorySelection(int choice) {
+    switch (choice) {
+        case 1:
+            fs::current_path(fs::current_path().parent_path());
+            std::cout << "Moved to parent directory: " << fs::current_path() << "\n";
+            break;
+        case 2:
+            fs::current_path(fs::path("/"));
+            std::cout << "Moved to root directory: " << fs::current_path() << "\n";
+            break;
+        case 3: {
+            std::string dirName;
+            std::cout << "Enter the name of the directory to move to: ";
+            std::cin >> dirName;
+            if (fs::exists(dirName) && fs::is_directory(dirName)) {
+                fs::current_path(dirName);
+                std::cout << "Moved to directory: " << fs::current_path() << "\n";
+            } else {
+                std::cerr << "Error: Directory '" << dirName << "' does not exist.\n";
+            }
+            break;
+        }
+        default:
+            std::cerr << "Invalid choice. Returning to main menu.\n";
+    }
+}
+
+void exitProgram() {
+    std::cout << "Exiting the program. Goodbye!\n";
+}
