@@ -7,9 +7,9 @@
 
     void displayFiles(){
         system("dir");   
-        system("pause"); //mag pause kadyot ang screen
+        system("pause"); 
     }
-//Here is the Display files function code
+
 
 void createDirectory(){
             std::cout << "\nEnter The Directory Name: ";
@@ -30,7 +30,7 @@ void createDirectory(){
                 _getcwd(currentDir, sizeof(currentDir));
                 std::cout << "\nCurrent Directory: " << currentDir << "\n";
 
-//Here is the changedirectory function code
+
 
     std::cout << "1. Step By Step Backward\n";
     std::cout << "2. GOTO Root Directory\n";
@@ -54,7 +54,6 @@ void createDirectory(){
     system("pause");
 }
 
-//Here is the Currentdirectory function code
 
 
 int main(){
@@ -68,7 +67,7 @@ int main(){
                 std::cout << "4. Exit\n";
                 std::cout << "Enter A Number: ";
                 std::cin >> choice;
-//here I use switch function
+
 
         switch (choice) {
             case 1:
